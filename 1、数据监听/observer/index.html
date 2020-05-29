@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Observer</title>
+    <style>
+        *{
+            padding: 0;
+            margin: 0;
+        }
+        .box{
+            margin: 20px;
+            border-radius: 5px;
+            background: #9696e2;
+            padding: 10px;
+        }
+        .header{
+            font-size: 24px;
+            color: aqua;
+        }
+        .box-line{
+            border-bottom: 1px solid #73ec83;
+        }
+        .box-line p{
+            font-size: 20px;
+        }
+        .box-line div,.box-line input{
+            display: inline-block;
+            width: 100px;
+            height: 30px;
+            line-height: 30px;
+            margin: 10px;
+            padding: 5px;
+            outline: none;
+            background: #fff;
+            vertical-align: middle;
+            border-radius: 5px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="box">
+        <div class="header">test</div>
+        <div class="box-line">
+            <p>get</p>
+            <div class="testget"></div>
+            <input type="text" class="testget">
+        </div>
+        <div class="box-line">
+            <p>set</p>
+            <input type="text" id="testset">
+        </div>
+    </div>
+
+    <div class="box">
+        <div class="header">a</div>
+        <div class="box-line">
+            <p>get</p>
+            <div class="aget"></div>
+        </div>
+        <div class="box-line">
+            <p>set</p>
+            <input type="text" id="aset">
+        </div>
+    </div>
+</div>
+<script type="module">
+    import Observer from "./observer.js";
+
+    class Vue {
+        constructor(obj){
+            this.data = new Observer(obj);
+            let keys = Object.keys(obj);
+            for(let i=0;i<keys.length;i++){
+                let setdom = document.getElementById(`${keys[i]}set`);
+                if(setdom){
+                    setdom.value = this.data.value[keys[i]]
+                    setdom.addEventListener('input',(event)=>{
+                        this.data.value[keys[i]] = event.target.value
+                    },false)
+                }
+
+                let getdom = document.getElementsByClassName(`${keys[i]}get`);
+                if(getdom.length>0){
+                    console.log('domlength-'+getdom.length)
+                    for(let j=0;j<getdom.length;j++){
+                        let val = this.data.value[keys[i]]
+                        if(getdom[j].tagName === 'INPUT'){
+                            getdom[j].value = val
+                        }else {
+                            getdom[j].innerHTML =val
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    window.app = new Vue({
+        test:'test',
+        a:'a'
+    })
+</script>
+</body>
+</html>
